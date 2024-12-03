@@ -36,8 +36,8 @@ jobs:
       - name: Print Gradle version
         run: ./gradlew --version
 
-      - name: Install dependencies
-        run: ./gradlew build --no-daemon --stacktrace
+      - name: Install dependencies 
+        run: ./gradlew build --no-daemon --stacktrace --exclude-task test
 
       - name: Print Gradle dependencies
         run: ./gradlew dependencies
