@@ -1,0 +1,37 @@
+name: Java Gradle Test Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      test-pattern:
+        description: 'Test pattern to run (e.g., storeAPI.*)'
+        required: true
+        default: 'storeAPI.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adoptopenjdk'
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Install dependencies
+        run: ./gradlew build --no-daemon
+
+      - name: Run tests from specific folder
+        run: ./gradlew test --tests "${{ github.event.inputs.test-pattern }}"
