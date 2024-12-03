@@ -45,10 +45,14 @@ jobs:
       - name: Run tests from specific folder
         run: ./gradlew test --tests "${{ github.event.inputs.test-pattern }}" --stacktrace
        
-      - name: Upload test reports as artifact
+      - name: Generate Allure Report
+        run: ./gradlew allureReport
+        if: always()  
+
+      - name: Upload Allure Report
         uses: actions/upload-artifact@v3
         with:
-          name: test-reports
-          path: build/reports
+          name: allure-report
+          path: build/reports/allure-report
         if: always()  
         

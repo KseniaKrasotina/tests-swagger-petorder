@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id("io.qameta.allure") version "2.12.0"
 }
 
 group 'org.example'
@@ -7,22 +8,42 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
     // Main dependencies
     implementation 'org.junit.jupiter:junit-jupiter:5.4.2'  // JUnit 5
-    implementation 'com.google.code.gson:gson:2.8.6'         // Gson
+    implementation 'com.google.code.gson:gson:2.8.6'       // Gson
 
     // Test dependencies
-    testImplementation group: 'junit', name: 'junit', version: '4.12'  // JUnit 4
-    testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'  // Rest Assured
-    testImplementation group: 'io.rest-assured', name: 'json-schema-validator', version: '4.3.1' // JSON Schema Validator
+    testImplementation 'junit:junit:4.12'                 // JUnit 4
+    testImplementation 'io.rest-assured:rest-assured:3.0.0' // Rest Assured
+    testImplementation 'io.rest-assured:json-schema-validator:4.3.1' // JSON Schema Validator
+    testImplementation 'io.qameta.allure:allure-junit5:2.20.1' // Allure JUnit 5 integration
 
-    // JAXB - usually required for older Java versions (pre-Java 11)
-    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+    // JAXB - typically required for older Java versions (pre-Java 11)
+    implementation 'javax.xml.bind:jaxb-api:2.3.0'
+}
+
+allure {
+    version = '2.20.1'
+    autoconfigure = true
+    aspectjweaver = true // Enable weaving if necessary
 }
 
 test {
     useJUnitPlatform()
+
+    // Ensure reporting configuration is correct
+    reports {
+        junitXml.required.set(true) // Enable XML report for Allure
+        html.required.set(true)    // Optionally enable HTML test reports
+    }
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+        showStandardStreams = true
+    }
 }
