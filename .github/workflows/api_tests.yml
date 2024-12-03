@@ -16,6 +16,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Ensure gradlew is executable
+        run: chmod +x gradlew
+
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
@@ -30,8 +33,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Print Gradle version
+        run: ./gradlew --version
+
       - name: Install dependencies
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build --no-daemon --stacktrace
+
+      - name: Print Gradle dependencies
+        run: ./gradlew dependencies
 
       - name: Run tests from specific folder
-        run: ./gradlew test --tests "${{ github.event.inputs.test-pattern }}"
+        run: ./gradlew test --tests "${{ github.event.inputs.test-pattern }}" --stacktrace
